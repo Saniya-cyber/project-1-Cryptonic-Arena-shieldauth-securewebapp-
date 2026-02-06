@@ -2,32 +2,93 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>ShieldAuth | Secure Login</title>
-  <link rel="stylesheet" href="style.css" />
+  <title>ShieldAuth - Secure Login</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #0f172a, #020617);
+      color: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    .container {
+      background: #020617;
+      padding: 25px;
+      border-radius: 12px;
+      width: 320px;
+      box-shadow: 0 0 20px rgba(0, 255, 255, 0.2);
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 15px;
+      color: #38bdf8;
+    }
+
+    input {
+      width: 100%;
+      padding: 10px;
+      margin: 8px 0;
+      border-radius: 6px;
+      border: none;
+      outline: none;
+    }
+
+    button {
+      width: 100%;
+      padding: 10px;
+      background: #38bdf8;
+      border: none;
+      border-radius: 6px;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+
+    button:hover {
+      background: #0ea5e9;
+    }
+
+    .message {
+      text-align: center;
+      margin-top: 10px;
+      font-size: 14px;
+    }
+
+    .dashboard {
+      display: none;
+      text-align: center;
+    }
+
+    .dashboard button {
+      background: #ef4444;
+    }
+  </style>
 </head>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+<script src="script.js"></script>
+
 <body>
 
-  <div class="container">
-    <h1>🔐 ShieldAuth</h1>
-    <p class="subtitle">Secure Authentication System</p>
+  <!-- Login Section -->
+  <div class="container" id="loginBox">
+    <h2>🔐 ShieldAuth Login</h2>
+    <input type="text" id="username" placeholder="Username" />
+    <input type="password" id="password" placeholder="Password" />
+    <button id="loginBtn">Login</button>
+    <div class="message" id="message"></div>
+  </div>
 
-    <div class="card">
-      <h2>Login</h2>
-
-      <input type="text" id="username" placeholder="Username" />
-      <input type="password" id="password" placeholder="Password" />
-
-      <button onclick="login()">Login</button>
-      <button class="secondary" onclick="logout()">Logout</button>
-
-      <p id="message"></p>
-    </div>
-
-    <div class="card log-box">
-      <h2>Security Logs</h2>
-      <ul id="logs"></ul>
-    </div>
+  <!-- Dashboard Section -->
+  <div class="container dashboard" id="dashboardBox">
+    <h2>✅ Welcome, <span id="userDisplay"></span></h2>
+    <p>You are securely logged in.</p>
+    <button id="logoutBtn">Logout</button>
   </div>
 
   <script src="script.js"></script>
