@@ -1,54 +1,84 @@
-const users = {};
-let loginAttempts = {};
+// ============================
+// ShieldAuth Secure Login System
+// ============================
 
-function hashPassword(password) {
-  return btoa(password); // basic encoding for demo (we'll upgrade later)
+// Fake database (for demo)
+const usersDB = [
+  {
+    username: "admin",
+    passwordHash: "ef92b778ba..." // placeholder
+  }
+];
+
+// DOM elements
+const loginForm = document.getElementById("loginForm");
+const messageBox = document.getElementById("message");
+const logBox = document.getElementById("securityLogs");
+
+// ----------------------------
+// SECURITY LOGGER
+// ----------------------------
+function logSecurityEvent(event) {
+  const time = new Date().toLocaleTimeString();
+  logBox.innerHTML += `<p>[${time}] ${event}</p>`;
 }
 
-function strongPassword(password) {
-  const regex = /^(?=.*[A-Z])(?=.*[0-9])(?=.*[@$!%*?&]).{8,}$/;
-  return regex.test(password);
+// ----------------------------
+// INPUT SANITIZATION
+// ----------------------------
+function sanitize(input) {
+  return input.replace(/[<>\/'"]/g, "");
 }
 
-function register() {
-  const user = regUser.value.trim();
-  const pass = regPass.value;
-
-  if (!user || !pass) {
-    regMsg.textContent = "All fields required.";
-    return;
-  }
-
-  if (!strongPassword(pass)) {
-    regMsg.textContent = "Password must be 8+ chars, include uppercase, number & symbol.";
-    return;
-  }
-
-  users[user] = hashPassword(pass);
-  regMsg.textContent = "✅ Registered successfully!";
+// ----------------------------
+// PASSWORD HASHING (SHA-256)
+// ----------------------------
+async function hashPassword(password) {
+  const encoder = new TextEncoder();
+  const data = encoder.encode(password);
+  const hashBuffer = await crypto.subtle.digest("SHA-256", data);
+  return Array.from(new Uint8Array(hashBuffer))
+    .map(b => b.toString(16).padStart(2, "0"))
+    .join("");
 }
 
-function login() {
-  const user = loginUser.value.trim();
-  const pass = loginPass.value;
+// ----------------------------
+// SESSION HANDLING
+// ----------------------------
+function createSession(username) {
+  sessionStorage.setItem("user", username);
+  logSecurityEvent(`Session created for ${username}`);
+}
 
-  loginAttempts[user] = loginAttempts[user] || 0;
+function destroySession() {
+  sessionStorage.removeItem("user");
+  logSecurityEvent("Session destroyed");
+}
 
-  if (loginAttempts[user] >= 3) {
-    loginMsg.textContent = "❌ Account locked due to too many attempts.";
-    return;
-  }
+// ----------------------------
+// LOGIN HANDLER
+// ----------------------------
+loginForm.addEventListener("submit", async function (e) {
+  e.preventDefault();
 
-  if (users[user] && users[user] === hashPassword(pass)) {
-    loginMsg.textContent = "✅ Login successful!";
-    dashboard.classList.remove("hidden");
+  let username = sanitize(document.getElementById("username").value);
+  let password = sanitize(document.getElementById("password").value);
+
+  logSecurityEvent("Login attempt detected");
+
+  const passwordHash = await hashPassword(password);
+
+  // Fake stored hash (password = admin123)
+  const storedHash = await hashPassword("admin123");
+
+  if (username === "admin" && passwordHash === storedHash) {
+    createSession(username);
+    messageBox.innerText = "✅ Login successful!";
+    messageBox.style.color = "green";
+    logSecurityEvent("Login successful");
   } else {
-    loginAttempts[user]++;
-    loginMsg.textContent = "❌ Invalid credentials.";
+    messageBox.innerText = "❌ Invalid credentials!";
+    messageBox.style.color = "red";
+    logSecurityEvent("Failed login attempt");
   }
-}
-
-function logout() {
-  dashboard.classList.add("hidden");
-  loginMsg.textContent = "Logged out.";
-}
+});

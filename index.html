@@ -2,37 +2,22 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>ShieldAuth | Secure Login System</title>
+  <title>ShieldAuth Secure Login</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
+  <h1>🔐 ShieldAuth Secure Login System</h1>
 
-  <div class="container">
-    <h1>🛡️ ShieldAuth</h1>
-    <p>Secure Login System</p>
+  <form id="loginForm">
+    <input type="text" id="username" placeholder="Username" required />
+    <input type="password" id="password" placeholder="Password" required />
+    <button type="submit">Login</button>
+  </form>
 
-    <div class="form-box">
-      <h2>Register</h2>
-      <input type="text" id="regUser" placeholder="Username" />
-      <input type="password" id="regPass" placeholder="Password" />
-      <button onclick="register()">Register</button>
-      <p id="regMsg"></p>
-    </div>
+  <p id="message"></p>
 
-    <div class="form-box">
-      <h2>Login</h2>
-      <input type="text" id="loginUser" placeholder="Username" />
-      <input type="password" id="loginPass" placeholder="Password" />
-      <button onclick="login()">Login</button>
-      <p id="loginMsg"></p>
-    </div>
-
-    <div id="dashboard" class="hidden">
-      <h2>Welcome 🎉</h2>
-      <p>You are logged in securely.</p>
-      <button onclick="logout()">Logout</button>
-    </div>
-  </div>
+  <h3>🛡 Security Event Logs</h3>
+  <div id="securityLogs" style="background:#111;color:#0f0;padding:10px;height:150px;overflow:auto;"></div>
 
   <script src="script.js"></script>
 </body>
